@@ -29,5 +29,7 @@ export const DNA_EXAMPLE =
 export const PROTEIN_EXAMPLE =
   'MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSY'
 
+/** Interval in ms between job status poll requests. */
 export const POLL_INTERVAL_MS = 2000
+/** Maximum number of poll attempts before giving up (total wait ≈ 60 s). */
 export const MAX_POLL_ATTEMPTS = 30

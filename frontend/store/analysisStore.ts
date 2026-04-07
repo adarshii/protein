@@ -47,7 +47,8 @@ interface AnalysisStore {
 }
 
 let _id = 0
-const nextId = () => `entry-${++_id}-${Date.now()}`
+/** Generate a unique ID resilient to rapid calls using an incrementing counter + timestamp. */
+const nextId = () => `entry-${++_id}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
 
 export const useAnalysisStore = create<AnalysisStore>((set) => ({
   sequences: [],

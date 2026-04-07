@@ -297,3 +297,4 @@ service-account*.json
 scratch/
 TODO.local
 NOTES.local
+tsconfig.tsbuildinfo
