@@ -20,7 +20,7 @@ aioredis>=2.0.0
 biopython>=1.81
 
 # Chemoinformatics (install via: pip install rdkit-pypi OR conda install -c conda-forge rdkit)
-rdkit-pypi>=2022.9.5
+# rdkit-pypi>=2022.9.5  # Install via: pip install rdkit-pypi OR conda install -c conda-forge rdkit
 
 # ML / Data science
 scikit-learn>=1.3.0
