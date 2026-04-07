@@ -34,6 +34,9 @@ ENV NEXT_TELEMETRY_DISABLED=1 \
 # Produce a standalone Next.js build for minimal runtime image
 RUN npm run build
 
+# IMPORTANT: Ensure public directory exists (even if empty)
+RUN mkdir -p /app/public
+
 
 # ============================================================
 # Stage 3: Minimal production runtime
