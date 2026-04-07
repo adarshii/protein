@@ -1,0 +1,300 @@
+# =============================================================================
+# Python
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+pytestdebug.log
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# pyright
+pyrightconfig.json
+
+# ruff
+.ruff_cache/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# =============================================================================
+# Node.js / Next.js / Frontend
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.npm
+
+# Next.js
+.next/
+out/
+.next/cache/
+
+# Nuxt
+.nuxt/
+.output/
+
+# Build output
+dist/
+build/
+.turbo/
+.vercel/
+.netlify/
+
+# Dependency lock files (keep one; ignore alternatives)
+# Uncomment the one you don't use:
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Environment files (keep .env.example, ignore real .env files)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+.env.staging
+!.env.example
+
+# =============================================================================
+# Docker
+# =============================================================================
+.dockerignore
+docker-compose.override.yml
+docker-compose.local.yml
+*.tar
+*.tar.gz
+
+# =============================================================================
+# Databases & Data
+# =============================================================================
+*.db
+*.sqlite
+*.sqlite3
+*.sql.gz
+postgres-data/
+redis-data/
+neo4j-data/
+rabbitmq-data/
+/data/
+volumes/
+
+# =============================================================================
+# Logs & Runtime
+# =============================================================================
+logs/
+*.log
+*.log.*
+log/
+pids/
+*.pid
+*.seed
+*.pid.lock
+runtime/
+tmp/
+
+# =============================================================================
+# IDEs & Editors
+# =============================================================================
+# VSCode
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# JetBrains (PyCharm, IntelliJ, WebStorm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+Session.vim
+.vim/
+
+# Emacs
+*~
+\#*\#
+.\#*
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# TextMate
+*.tmproj
+*.tmproject
+tmtags
+
+# =============================================================================
+# OS-specific
+# =============================================================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+Icon
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# Bioinformatics / Chemoinformatics artefacts
+# =============================================================================
+*.pdb
+*.cif
+*.mmcif
+*.ent
+*.mol
+*.mol2
+*.sdf
+*.sd
+*.rxn
+*.rdf
+*.xyz
+*.trr
+*.xtc
+*.dcd
+*.nc
+*.h5
+*.hdf5
+*.npz
+*.npy
+alphafold_cache/
+structure_cache/
+ligand_cache/
+blast_db/
+hmmer_db/
+rdkit_cache/
+
+# =============================================================================
+# Jupyter Notebooks
+# =============================================================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+profile_default/
+ipython_config.py
+*.ipynb
+
+# =============================================================================
+# Testing & CI
+# =============================================================================
+.pytest_cache/
+test-results/
+test-reports/
+allure-results/
+allure-report/
+junit.xml
+report.xml
+
+# =============================================================================
+# Secrets & Security
+# =============================================================================
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+.secrets/
+credentials/
+service-account*.json
+
+# =============================================================================
+# Miscellaneous
+# =============================================================================
+*.bak
+*.orig
+*.rej
+*.patch
+.scratch/
+scratch/
+TODO.local
+NOTES.local
+tsconfig.tsbuildinfo

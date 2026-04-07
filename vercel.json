@@ -1,0 +1,70 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+
+  "framework": "nextjs",
+
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/.next",
+  "installCommand": "cd frontend && npm ci",
+  "devCommand": "cd frontend && npm run dev",
+
+  "regions": ["iad1"],
+
+  "rewrites": [
+    {
+      "source": "/api/v1/:path*",
+      "destination": "https://protein-api.onrender.com/api/v1/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://protein-api.onrender.com/health"
+    },
+    {
+      "source": "/docs",
+      "destination": "https://protein-api.onrender.com/docs"
+    },
+    {
+      "source": "/openapi.json",
+      "destination": "https://protein-api.onrender.com/openapi.json"
+    }
+  ],
+
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options",    "value": "nosniff" },
+        { "key": "X-Frame-Options",           "value": "DENY" },
+        { "key": "X-XSS-Protection",          "value": "1; mode=block" },
+        { "key": "Referrer-Policy",           "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy",        "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options",    "value": "nosniff" },
+        { "key": "X-Frame-Options",           "value": "DENY" },
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
+      ]
+    }
+  ],
+
+  "env": {
+    "NEXT_PUBLIC_APP_NAME": "Protein Platform",
+    "NEXT_PUBLIC_APP_VERSION": "1.0.0"
+  },
+
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_API_URL": "https://protein-api.onrender.com/api/v1",
+      "NEXT_TELEMETRY_DISABLED": "1"
+    }
+  },
+
+  "crons": [],
+
+  "cleanUrls": true,
+  "trailingSlash": false
+}
