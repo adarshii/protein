@@ -28,7 +28,7 @@ export default function DashboardPage() {
     <div className="space-y-6 animate-fade-in">
       <div>
         <h2 className="text-2xl font-bold text-slate-800">Welcome back</h2>
-        <p className="text-slate-500 mt-1">Here's what's happening on your platform.</p>
+        <p className="text-slate-500 mt-1">Here&rsquo;s what&rsquo;s happening on your platform.</p>
       </div>
 
       {/* Stats */}

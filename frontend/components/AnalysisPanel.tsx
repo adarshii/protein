@@ -12,7 +12,6 @@ import { ResultsVisualizer } from '@/components/ResultsVisualizer'
 import { useAnalysis } from '@/hooks/useAnalysis'
 import { findORFs, pairwiseAlignment } from '@/lib/api'
 import { MOLECULE_EXAMPLE_SMILES } from '@/lib/constants'
-import { SequenceType } from '@/lib/types'
 
 // Molecule form schema
 const moleculeSchema = z.object({

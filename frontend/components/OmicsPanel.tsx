@@ -19,8 +19,6 @@ import {
   Cell,
 } from 'recharts'
 
-const COLORS = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6']
-
 // Variant annotation form
 const variantSchema = z.object({
   chromosome: z.string().min(1, 'Chromosome required'),
