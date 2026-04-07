@@ -124,7 +124,7 @@ postgres-data/
 redis-data/
 neo4j-data/
 rabbitmq-data/
-data/
+/data/
 volumes/
 
 # =============================================================================
