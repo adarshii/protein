@@ -1,0 +1,153 @@
+# =============================================================================
+# Render deployment configuration — Protein Platform
+# https://render.com/docs/yaml-spec
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # FastAPI Backend
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: protein-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    branch: main
+    healthCheckPath: /health
+    numInstances: 1
+
+    envVars:
+      - key: DEBUG
+        value: "false"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: API_HOST
+        value: "0.0.0.0"
+      - key: API_PORT
+        value: "8000"
+      - key: API_RELOAD
+        value: "false"
+
+      # Security — set real values in Render dashboard
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+
+      # PostgreSQL — populated by the database service below
+      - key: DATABASE_URL
+        fromDatabase:
+          name: protein-postgres
+          property: connectionString
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: protein-postgres
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: protein-postgres
+          property: port
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: protein-postgres
+          property: database
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: protein-postgres
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: protein-postgres
+          property: password
+
+      # Redis — populated by the Redis service below
+      - key: REDIS_URL
+        fromService:
+          name: protein-redis
+          type: redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          name: protein-redis
+          type: redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          name: protein-redis
+          type: redis
+          property: connectionString
+
+      # CORS — update after frontend is deployed
+      - key: CORS_ORIGINS
+        value: "https://protein-platform.vercel.app,http://localhost:3000"
+
+      # External APIs
+      - key: UNIPROT_API_URL
+        value: https://rest.uniprot.org/uniprotkb
+      - key: ALPHAFOLD_API_URL
+        value: https://alphafold.ebi.ac.uk/api
+      - key: PUBCHEM_API_URL
+        value: https://pubchem.ncbi.nlm.nih.gov/rest/pug
+
+  # ---------------------------------------------------------------------------
+  # Celery Worker
+  # ---------------------------------------------------------------------------
+  - type: worker
+    name: protein-worker
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile.worker
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    branch: main
+
+    envVars:
+      - key: LOG_LEVEL
+        value: INFO
+      - key: DATABASE_URL
+        fromDatabase:
+          name: protein-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: protein-redis
+          type: redis
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          name: protein-redis
+          type: redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          name: protein-redis
+          type: redis
+          property: connectionString
+      - key: SECRET_KEY
+        fromService:
+          name: protein-api
+          type: web
+          envVarKey: SECRET_KEY
+
+# ---------------------------------------------------------------------------
+# Managed PostgreSQL
+# ---------------------------------------------------------------------------
+databases:
+  - name: protein-postgres
+    plan: free
+    region: oregon
+    databaseName: protein_db
+    user: protein_user
+    postgresMajorVersion: 16
+
+# ---------------------------------------------------------------------------
+# Managed Redis
+# ---------------------------------------------------------------------------
+  - name: protein-redis
+    type: redis
+    plan: free
+    region: oregon
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []   # only allow internal traffic
