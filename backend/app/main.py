@@ -30,7 +30,7 @@ from app.api import health, bioinformatics, chemoinformatics, ml_inference, geno
 configure_logging(settings.LOG_LEVEL, settings.LOG_FORMAT)
 logger = structlog.get_logger(__name__)
 STARTUP_MAX_RETRIES = 5
-STARTUP_RETRY_MAX_SLEEP_SECONDS = 10
+MAX_RETRY_SLEEP_SECONDS = 10
 
 # ---------------------------------------------------------------------------
 # Prometheus metrics
@@ -66,7 +66,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         except Exception as exc:  # noqa: BLE001
             logger.warning("database_unavailable", attempt=attempt, error=str(exc))
             if attempt < STARTUP_MAX_RETRIES:
-                await asyncio.sleep(min(2**attempt, STARTUP_RETRY_MAX_SLEEP_SECONDS))
+                await asyncio.sleep(min(2**attempt, MAX_RETRY_SLEEP_SECONDS))
 
     # Redis
     from app.services.data.cache import cache_service
@@ -78,7 +78,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         except Exception as exc:  # noqa: BLE001
             logger.warning("redis_unavailable", attempt=attempt, error=str(exc))
             if attempt < STARTUP_MAX_RETRIES:
-                await asyncio.sleep(min(2**attempt, STARTUP_RETRY_MAX_SLEEP_SECONDS))
+                await asyncio.sleep(min(2**attempt, MAX_RETRY_SLEEP_SECONDS))
 
     yield
 

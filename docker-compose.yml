@@ -122,6 +122,7 @@ services:
       RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-biochemai_vhost}
       RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-CHANGE_ME_RABBITMQ_ERLANG_COOKIE}
     volumes:
+      # Persist only mnesia data to avoid stale `.erlang.cookie` ownership issues on Docker Desktop/WSL.
       - rabbitmq_data:/var/lib/rabbitmq/mnesia
     ports:
       - "5672:5672"    # AMQP
