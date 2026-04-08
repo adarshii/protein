@@ -1,7 +1,12 @@
 import { SequenceType } from './types'
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const normalizeApiBaseUrl = (value?: string) =>
+  (value || 'http://localhost:8000')
+    .replace(/\/+$/, '')
+    .replace(/\/api\/v1$/, '')
+    .replace(/\/api$/, '')
+
+export const API_BASE_URL = normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_URL)
 
 export const SEQUENCE_TYPES: { value: SequenceType; label: string }[] = [
   { value: SequenceType.DNA, label: 'DNA' },

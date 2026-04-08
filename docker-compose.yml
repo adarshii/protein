@@ -1,5 +1,3 @@
-version: "3.9"
-
 # ============================================================
 # Named volumes for persistent data
 # ============================================================
@@ -36,7 +34,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-biochemai}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-biochemai_postgres_pass}
       POSTGRES_DB: ${POSTGRES_DB:-biochemai_db}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
@@ -60,10 +58,10 @@ services:
     container_name: biochemai_redis
     restart: unless-stopped
     environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD must be set}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-biochemai_redis_pass}
     command: >
       redis-server
-      --requirepass ${REDIS_PASSWORD}
+      --requirepass ${REDIS_PASSWORD:-biochemai_redis_pass}
       --appendonly yes
       --maxmemory 512mb
       --maxmemory-policy allkeys-lru
@@ -74,7 +72,7 @@ services:
     networks:
       - biochemai_net
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: ["CMD-SHELL", "redis-cli -a '$${REDIS_PASSWORD}' ping | grep -q PONG"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -91,7 +89,7 @@ services:
       NEO4J_AUTH: ${NEO4J_AUTH:-neo4j/biochemai_neo4j_pass}
       NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
       NEO4J_dbms_security_procedures_unrestricted: "apoc.*,gds.*"
-      NEO4J_server_memory_heap_initial__size: "256m"
+      NEO4J_server_memory_heap_initial__size: "512m"
       NEO4J_server_memory_heap_max__size: "512m"
       NEO4J_server_memory_pagecache__size: "256m"
     volumes:
@@ -118,10 +116,12 @@ services:
     image: rabbitmq:3.12-management-alpine
     container_name: biochemai_rabbitmq
     restart: unless-stopped
+    user: "0:0"
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-biochemai}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:?RABBITMQ_DEFAULT_PASS must be set}
-      RABBITMQ_DEFAULT_VHOST: biochemai_vhost
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-biochemai_rabbitmq_pass}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-biochemai_vhost}
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-biochemai_erlang_cookie_1234567890}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     ports:
@@ -147,18 +147,23 @@ services:
     container_name: biochemai_backend
     restart: unless-stopped
     environment:
-      # Database
-      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-biochemai}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-biochemai_db}
-      # Redis
-      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-biochemai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-biochemai_postgres_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-biochemai_db}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-biochemai_redis_pass}
+      REDIS_DB: 0
       # Neo4j
       NEO4J_URI: bolt://neo4j:7687
       NEO4J_USER: neo4j
       NEO4J_PASSWORD: ${NEO4J_PASSWORD:-biochemai_neo4j_pass}
       # RabbitMQ
-      RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER:-biochemai}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:5672/biochemai_vhost
+      RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER:-biochemai}:${RABBITMQ_DEFAULT_PASS:-biochemai_rabbitmq_pass}@rabbitmq:5672/${RABBITMQ_VHOST:-biochemai_vhost}
       # App
-      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
+      SECRET_KEY: ${SECRET_KEY:-change-me-generate-strong-secret}
       ENVIRONMENT: ${ENVIRONMENT:-production}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
