@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+import asyncio
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -28,6 +29,8 @@ from app.api import health, bioinformatics, chemoinformatics, ml_inference, geno
 # ---------------------------------------------------------------------------
 configure_logging(settings.LOG_LEVEL, settings.LOG_FORMAT)
 logger = structlog.get_logger(__name__)
+STARTUP_MAX_RETRIES = 5
+MAX_RETRY_SLEEP_SECONDS = 10
 
 # ---------------------------------------------------------------------------
 # Prometheus metrics
@@ -54,20 +57,28 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("startup", version=settings.APP_VERSION)
 
     # Database
-    try:
-        from app.services.data.db import create_tables
-        await create_tables()
-        logger.info("database_ready")
-    except Exception as exc:  # noqa: BLE001
-        logger.warning("database_unavailable", error=str(exc))
+    from app.services.data.db import create_tables
+    for attempt in range(1, STARTUP_MAX_RETRIES + 1):
+        try:
+            await create_tables()
+            logger.info("database_ready", attempt=attempt)
+            break
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("database_unavailable", attempt=attempt, error=str(exc))
+            if attempt < STARTUP_MAX_RETRIES:
+                await asyncio.sleep(min(2**attempt, MAX_RETRY_SLEEP_SECONDS))
 
     # Redis
-    try:
-        from app.services.data.cache import cache_service
-        await cache_service.ping()
-        logger.info("redis_ready")
-    except Exception as exc:  # noqa: BLE001
-        logger.warning("redis_unavailable", error=str(exc))
+    from app.services.data.cache import cache_service
+    for attempt in range(1, STARTUP_MAX_RETRIES + 1):
+        try:
+            await cache_service.ping()
+            logger.info("redis_ready", attempt=attempt)
+            break
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("redis_unavailable", attempt=attempt, error=str(exc))
+            if attempt < STARTUP_MAX_RETRIES:
+                await asyncio.sleep(min(2**attempt, MAX_RETRY_SLEEP_SECONDS))
 
     yield
 

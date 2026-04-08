@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { API_BASE_URL } from './constants'
 import type {
   SequenceAnalysisResult,
   MoleculeAnalysisResult,
@@ -10,7 +11,7 @@ import type {
 } from './types'
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+  baseURL: API_BASE_URL,
   timeout: 60_000,
   headers: { 'Content-Type': 'application/json' },
 })
