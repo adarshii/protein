@@ -120,7 +120,7 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-biochemai}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-biochemai_rabbitmq_pass}
       RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-biochemai_vhost}
-      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-biochemai_erlang_cookie_1234567890}
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-CHANGE_ME_RABBITMQ_ERLANG_COOKIE}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq/mnesia
     ports:

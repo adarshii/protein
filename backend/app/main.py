@@ -66,7 +66,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         except Exception as exc:  # noqa: BLE001
             logger.warning("database_unavailable", attempt=attempt, error=str(exc))
             if attempt < STARTUP_MAX_RETRIES:
-                await asyncio.sleep(min(2 * attempt, STARTUP_RETRY_MAX_SLEEP_SECONDS))
+                await asyncio.sleep(min(2**attempt, STARTUP_RETRY_MAX_SLEEP_SECONDS))
 
     # Redis
     from app.services.data.cache import cache_service
@@ -78,7 +78,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         except Exception as exc:  # noqa: BLE001
             logger.warning("redis_unavailable", attempt=attempt, error=str(exc))
             if attempt < STARTUP_MAX_RETRIES:
-                await asyncio.sleep(min(2 * attempt, STARTUP_RETRY_MAX_SLEEP_SECONDS))
+                await asyncio.sleep(min(2**attempt, STARTUP_RETRY_MAX_SLEEP_SECONDS))
 
     yield
 
