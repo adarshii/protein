@@ -37,14 +37,14 @@ class SequenceValidationError(BioChemException):
     """Raised when a biological sequence fails validation."""
 
     def __init__(self, message: str, detail: Any = None) -> None:
-        super().__init__(message, status.HTTP_422_UNPROCESSABLE_ENTITY, detail)
+        super().__init__(message, status.HTTP_422_UNPROCESSABLE_CONTENT, detail)
 
 
 class MoleculeValidationError(BioChemException):
     """Raised when a chemical structure (SMILES/InChI) fails validation."""
 
     def __init__(self, message: str, detail: Any = None) -> None:
-        super().__init__(message, status.HTTP_422_UNPROCESSABLE_ENTITY, detail)
+        super().__init__(message, status.HTTP_422_UNPROCESSABLE_CONTENT, detail)
 
 
 class ExternalAPIError(BioChemException):
@@ -123,9 +123,9 @@ async def validation_exception_handler(
         errors=exc.errors(),
     )
     return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         content=_error_response(
-            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status.HTTP_422_UNPROCESSABLE_CONTENT,
             "ValidationError",
             "Request payload validation failed.",
             exc.errors(),
