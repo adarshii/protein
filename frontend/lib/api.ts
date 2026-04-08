@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { API_BASE_URL } from './constants'
 import type {
   SequenceAnalysisResult,
   MoleculeAnalysisResult,
@@ -9,14 +10,8 @@ import type {
   VariantAnnotation,
 } from './types'
 
-const normalizeApiBaseUrl = (value?: string) =>
-  (value || 'http://localhost:8000')
-    .replace(/\/+$/, '')
-    .replace(/\/api\/v1$/, '')
-    .replace(/\/api$/, '')
-
 const api = axios.create({
-  baseURL: normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_URL),
+  baseURL: API_BASE_URL,
   timeout: 60_000,
   headers: { 'Content-Type': 'application/json' },
 })

@@ -72,7 +72,7 @@ services:
     networks:
       - biochemai_net
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a '$${REDIS_PASSWORD}' ping | grep -q PONG"]
+      test: ["CMD-SHELL", "REDISCLI_AUTH=$${REDIS_PASSWORD} redis-cli ping | grep -q PONG"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -116,14 +116,13 @@ services:
     image: rabbitmq:3.12-management-alpine
     container_name: biochemai_rabbitmq
     restart: unless-stopped
-    user: "0:0"
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-biochemai}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-biochemai_rabbitmq_pass}
       RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-biochemai_vhost}
       RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-biochemai_erlang_cookie_1234567890}
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_data:/var/lib/rabbitmq/mnesia
     ports:
       - "5672:5672"    # AMQP
       - "15672:15672"  # Management UI
@@ -163,7 +162,7 @@ services:
       # RabbitMQ
       RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER:-biochemai}:${RABBITMQ_DEFAULT_PASS:-biochemai_rabbitmq_pass}@rabbitmq:5672/${RABBITMQ_VHOST:-biochemai_vhost}
       # App
-      SECRET_KEY: ${SECRET_KEY:-change-me-generate-strong-secret}
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set}
       ENVIRONMENT: ${ENVIRONMENT:-production}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
